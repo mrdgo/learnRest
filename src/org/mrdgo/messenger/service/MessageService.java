@@ -3,7 +3,10 @@ package org.mrdgo.messenger.service;
 import org.mrdgo.messenger.model.Message;
 import org.apache.log4j.Logger;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
+
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +27,33 @@ public class MessageService
     {
         log.debug("Has currently " + messages.size() + " messages.");
         return messages.values();
+    }
+
+    public Collection<Message> getMessagesByYear(int year)
+    {
+        Collection<Message> ret = new HashSet<Message>();
+        Calendar cal = Calendar.getInstance();
+        for(Message msg : messages.values())
+        {
+            cal.setTime(msg.getCreated());
+            if(cal.get(Calendar.YEAR) == year)
+            {
+                ret.add(msg);
+            }
+        }
+        return ret;
+    }
+
+    public Collection<Message> getMessagesPaginated(int start, int size)
+    {
+        Collection<Message> ret = new HashSet<Message>();
+        int index = 0;
+        for(Message msg : messages.values())
+        {
+            if(index >= start && index < start+size) ret.add(msg);
+            index++;
+        }
+        return ret;
     }
 
     public Message getMessage(long id)

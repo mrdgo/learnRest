@@ -2,6 +2,8 @@ package org.mrdgo.messenger.resources;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -29,12 +31,15 @@ public class MessageResource
     public MessageResource(){}
 
     @GET
-    public Collection<Message> getMessages()
+    public Collection<Message> getMessages(@DefaultValue("-1") @QueryParam("year") int year,
+                                           @DefaultValue("-1") @QueryParam("start") int start,
+                                           @DefaultValue("-1") @QueryParam("size") int size)
     {
-        log.debug("MessageResource.getMessages()");
-        Collection<Message> ret = messageService.getAllMessages();
-        if(ret == null) log.debug("getMessages(): Collection is null.");
-        return ret;
+        if(year > 0) return messageService.getMessagesByYear(year);
+
+        if(start >= 0 && size >= 0) return messageService.getMessagesPaginated(start, size);
+ 
+        return messageService.getAllMessages();
     }
 
     @POST
