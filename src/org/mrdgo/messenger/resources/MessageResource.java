@@ -2,7 +2,7 @@ package org.mrdgo.messenger.resources;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.BeanParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.mrdgo.messenger.service.MessageService;
 import org.mrdgo.messenger.model.Message;
 import org.mrdgo.messenger.database.Database;
-import org.mrdgo.messenger.resources.beans.MessageFilterBean;
 
 @Path("messages")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -48,7 +47,9 @@ public class MessageResource
      * 2. @Context
      *
      * Get Parameters in Collection mode.
-     * Example:
+     * Example below comment..
+     *
+     * 3. @BeanParam, well this needs a class to be defined.
      */
     @GET
     @Path("context")
@@ -59,21 +60,25 @@ public class MessageResource
         String cookies = headers.getCookies().toString();
         return "Path: " + path + "\nCookies: " + cookies;
     }
-    /**
-     * 3. @BeanParam
-     *
-     * See beans/MessageFilterBean.java for reference
-     * Example:
-     */
 
     @GET
-    public Collection<Message> getMessages(@BeanParam MessageFilterBean msg)
+    public Collection<Message> getMessages(@QueryParam("year") int year,
+                                           @DefaultValue("-1") @QueryParam("start") int start, 
+                                           @QueryParam("size") int size)
     {
-        if(msg.getYear() > 0) return messageService.getMessagesByYear(msg.getYear());
-
-        if(msg.getStart() >= 0 && msg.getSize() >= 0) return messageService.getMessagesPaginated(msg.getStart(), msg.getSize());
- 
-        return messageService.getAllMessages();
+        if(year > 0)                
+        {
+                log.debug("GET messages by year");
+                return messageService.getMessagesByYear(year);
+        }
+        else if(start >= 0 && size >= 0) {
+                log.debug("GET messages paginated");
+                return messageService.getMessagesPaginated(start, size);
+        }
+        else {
+                log.debug("GET all messages");
+                return messageService.getAllMessages();
+        }
     }
 
     @POST

@@ -21,6 +21,7 @@ public class MessageService
     {
         this.messages = new ConcurrentHashMap<>();
         this.msgCount = new AtomicLong(0L);
+        postMessage(new Message("Hallo Welt", "Maxim"));
     }
 
     public Collection<Message> getAllMessages()
@@ -72,6 +73,7 @@ public class MessageService
         message.setId(id);
         Message msg = messages.put(id, message);
         if(msg == null) log.debug("POST: successfully added new Message.\n" + message.getMessage());
+        else log.debug("Failed to add Message");
         return messages.get(id);
     }
 
