@@ -14,9 +14,9 @@ public class Profile
     public Profile(String profileName, String firstName, String lastName)
     {
         this.profileName = profileName;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.created = new Date();
+        this.lastName    = lastName;
+        this.firstName   = firstName;
+        this.created     = new Date();
     }
 
     public String getFirstName() { return firstName; }

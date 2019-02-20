@@ -16,6 +16,7 @@ public class MessageService
     private static Logger log = Logger.getLogger(MessageService.class);
     private ConcurrentMap<Long, Message> messages;
     private AtomicLong msgCount;
+    private CommentService commentService = Database.commentService;
 
     public MessageService()
     {
@@ -74,6 +75,7 @@ public class MessageService
         Message msg = messages.put(id, message);
         if(msg == null) log.debug("POST: successfully added new Message.\n" + message.getMessage());
         else log.debug("Failed to add Message");
+        commentService.initComments(id);
         return messages.get(id);
     }
 
