@@ -6,4 +6,5 @@ public class Database
 {
     public static MessageService messageService = new MessageService();
     public static ProfileService profileService = new ProfileService();
+    public static CommentService commentService = new CommentService();
 }

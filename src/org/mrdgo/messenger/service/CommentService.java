@@ -39,7 +39,8 @@ public class CommentService
     public void initComments(long messageId)
     {
         if(comments.get(messageId) != null) return; // already initialised
-        comments.put(messageId, new ConcurrentSkipListSet<Comment>());
+        // This Lambda compares two comments by their date of creation
+        comments.put(messageId, new ConcurrentSkipListSet<Comment>( (o1, o2) -> (o1.getCreated().compareTo(o2.getCreated())) ));
     }
 
 }
