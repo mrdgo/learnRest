@@ -1,6 +1,8 @@
 package org.mrdgo.messenger.service;
 
 import org.mrdgo.messenger.model.Message;
+import org.mrdgo.messenger.exception.DataNotFoundException;
+
 import org.apache.log4j.Logger;
 
 import java.util.Calendar;
@@ -16,7 +18,6 @@ public class MessageService
     private static Logger log = Logger.getLogger(MessageService.class);
     private ConcurrentMap<Long, Message> messages;
     private AtomicLong msgCount;
-    private CommentService commentService = Database.commentService;
 
     public MessageService()
     {
@@ -58,9 +59,11 @@ public class MessageService
         return ret;
     }
 
-    public Message getMessage(long id)
+    public Message getMessage(long id) throws DataNotFoundException
     {
-        return messages.get(id);
+        Message mes = messages.get(id);
+        if(mes == null) throw new DataNotFoundException("Message with id \"" + id + "\" not found");
+        return mes;
     }
 
     public Message deleteMessage(long id)
@@ -75,7 +78,6 @@ public class MessageService
         Message msg = messages.put(id, message);
         if(msg == null) log.debug("POST: successfully added new Message.\n" + message.getMessage());
         else log.debug("Failed to add Message");
-        commentService.initComments(id);
         return messages.get(id);
     }
 

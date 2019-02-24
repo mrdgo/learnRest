@@ -12,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.POST;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.HttpHeaders;
@@ -82,14 +83,17 @@ public class MessageResource
     }
 
     @POST
-    public Message addMessage(Message message)
+    public Response addMessage(Message message, @Context UriInfo uriInfo)
     {
-        return messageService.postMessage(message);
+        Message ret = messageService.postMessage(new Message(message.getMessage(), message.getAuthor()));
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(ret.getId())).build())
+                       .entity(ret)
+                       .build();
     }
 
     @PUT
     @Path("{messageId}")
-    public Message putMessage(@PathParam("messageId") long id, Message message)
+    public Message putMessage(@PathParam("messageId") int id, Message message)
     {
         message.setId(id);
         return messageService.putMessage(message);
@@ -97,16 +101,16 @@ public class MessageResource
 
     @DELETE
     @Path("{messageId}")
-    public Message deleteMessage(@PathParam("messageId") long id)
+    public Message deleteMessage(@PathParam("messageId") int id)
     {
         return messageService.deleteMessage(id);
     }
 
     @GET
     @Path("{messageId}")
-    public Message getMessage(@PathParam("messageId") long messageId)
+    public Response getMessage(@PathParam("messageId") int messageId)
     {
-        return messageService.getMessage(messageId);
+        return Response.ok().entity(messageService.getMessage(messageId)).build();
     }
 
     /**

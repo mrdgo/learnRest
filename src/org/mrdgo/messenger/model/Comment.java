@@ -1,24 +1,30 @@
 package org.mrdgo.messenger.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Date;
 
 public class Comment
 {
-    private long commentId;
+    private int commentId;
     private String comment;
     private String author;
     private Date created;
+    private static AtomicInteger id = new AtomicInteger(0);
 
-    public Comment(long id)
+    public Comment(){}
+
+    public Comment(String comment, String author)
     {
         this.created   = new Date();
-        this.comment   = "";
-        this.author    = "";
-        this.commentId = id;
+        this.comment   = comment;
+        this.author    = author;
+        this.commentId = id.addAndGet(1);
     }
 
-    public long getCommentId() { return commentId; }
-    public void setCommentId(long commentId) { this.commentId = commentId; }
+    public void setCommentId() { commentId = id.addAndGet(1); }
+
+    public int getCommentId() { return commentId; }
+    public void setCommentId(int commentId) { this.commentId = commentId; }
 
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }
