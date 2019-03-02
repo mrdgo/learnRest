@@ -1,7 +1,6 @@
 package org.mrdgo.messenger.service;
 
 import org.mrdgo.messenger.model.Message;
-import org.mrdgo.messenger.exception.DataNotFoundException;
 
 import org.apache.log4j.Logger;
 
@@ -12,6 +11,8 @@ import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.ws.rs.NotFoundException;
 
 public class MessageService
 {
@@ -59,10 +60,10 @@ public class MessageService
         return ret;
     }
 
-    public Message getMessage(long id) throws DataNotFoundException
+    public Message getMessage(long id)
     {
         Message mes = messages.get(id);
-        if(mes == null) throw new DataNotFoundException("Message with id \"" + id + "\" not found");
+        if(mes == null) throw new NotFoundException("Message with id \"" + id + "\" not found");
         return mes;
     }
 
